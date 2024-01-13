@@ -1,0 +1,35 @@
+.journal-entries {
+  display: grid;
+  gap: 20px;
+}
+
+.journal-entry {
+  padding: 2rem;
+  background-color: #f3f8ff;
+  border-radius: 3px;
+  box-shadow: 5px 6px 4px -4px rgba(0, 0, 0, 0.1);
+  min-width: 0;
+}
+
+.entry-detail {
+  margin-bottom: 1.5rem;
+}
+
+.entry-title {
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.entry-content-trimmed {
+  white-space: nowrap;
+  width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

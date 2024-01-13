@@ -1,0 +1,15 @@
+#new-entry {
+  background-color: #313232;
+  color: #f9f7f5;
+  display: inline-block;
+  font-weight: 600;
+  border-radius: 30px;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+}
+
+#new-entry a {
+  display: block;
+  padding: 16px;
+}
