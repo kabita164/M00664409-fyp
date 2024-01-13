@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { getFormattedDate } from "../utils/utils";
 import "./JournalForm.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -94,12 +96,10 @@ const JournalForm = () => {
           <h5 className="entry-title">{entryTitle}</h5>
           <span></span>
         </div>
-        <textarea
+        <ReactQuill
           value={entryContent}
-          onChange={(e) => setEntryContent(e.target.value)}
-          placeholder="Write your thoughts here..."
-          rows="5"
-          className="block p-2.5 w-full rounded-lg placeholder-gray-400 border border-gray-300"
+          onChange={setEntryContent} // Update the state with the new content
+          placeholder="Write your journal entry here..."
         />
         <button type="submit">Save</button>
         <button type="button" onClick={handleCancel}>

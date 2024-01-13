@@ -7,6 +7,7 @@ import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import DOMPurify from "dompurify";
 import "./Journals.css";
 
 const Journals = () => {
@@ -48,7 +49,12 @@ const Journals = () => {
             <li key={entry.id} className="journal-entry">
               <div className="entry-detail">
                 <h5 className="entry-title">{entry.title}</h5>
-                <div className="entry-content-trimmed">{entry.content}</div>
+                <div
+                  className="entry-content-trimmed"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(entry.content),
+                  }}
+                />
               </div>
 
               <div className="entry-actions">
