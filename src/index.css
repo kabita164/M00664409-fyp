@@ -6,6 +6,14 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  --main-dark-color: #2b4767;
+  --main-light-color: #f9f7f5;
+  --heading-color: #001167;
+  --main-button-bg-color: #1c57aa;
+  --secondary-button-bg-color: #eceaed;
+  --accent-color-1: #b2cff7;
+  --accent-color-2: #b2fcd5;
 }
 
 html {
@@ -13,8 +21,25 @@ html {
 }
 
 body {
-  color: #313232;
+  min-height: 100vh;
+  color: #2b4767;
   font-size: 1.6rem;
+
+  background-image: linear-gradient(
+    to left top,
+    #fbf9f6,
+    #fbf2ee,
+    #fbebeb,
+    #f6e4ed,
+    #eae0f2,
+    #e4e0f3,
+    #dfe0f3,
+    #d9e0f2,
+    #e0e2f1,
+    #e6e4ef,
+    #eae7ee,
+    #eceaed
+  );
 }
 
 h1,
@@ -24,6 +49,7 @@ h4,
 h5,
 h6 {
   margin: 1rem 0;
+  color: var(--heading-color);
 }
 
 h1,
@@ -31,6 +57,7 @@ h2,
 h3,
 h4 {
   font-weight: 600;
+  font-family: "DM Serif Display", serif;
 }
 
 h1 {

@@ -14,9 +14,12 @@ header {
 }
 
 #navbar ul li {
-  padding: 4px 8px;
   border-radius: 2px;
   transition: all 0.25s ease-in;
+}
+
+#navbar ul li a {
+  padding: 4px 8px;
 }
 
 #navbar ul li:hover {

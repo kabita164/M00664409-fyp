@@ -1,13 +1,13 @@
 .journal-entries {
   display: grid;
-  gap: 20px;
+  gap: 2.6rem;
 }
 
 .journal-entry {
   padding: 2rem;
-  background-color: #f3f8ff;
+  background-color: #f8f8f9;
   border-radius: 3px;
-  box-shadow: 5px 6px 4px -4px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 7px 6px -5px rgba(0, 0, 0, 0.1);
   min-width: 0;
 }
 

@@ -13,3 +13,20 @@
   display: block;
   padding: 16px;
 }
+
+button.btn {
+  background-color: var(--main-button-bg-color);
+  color: var(--main-light-color);
+  padding: 1rem 2rem;
+  font-weight: 500;
+  transition: all 0.2s ease-out;
+}
+
+button.btn:hover {
+  opacity: 0.75;
+}
+
+button.btn.btn--secondary {
+  background-color: var(--secondary-button-bg-color);
+  color: var(--main-dark-color);
+}

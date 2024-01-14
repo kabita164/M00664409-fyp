@@ -101,10 +101,18 @@ const JournalForm = () => {
           onChange={setEntryContent} // Update the state with the new content
           placeholder="Write your journal entry here..."
         />
-        <button type="submit">Save</button>
-        <button type="button" onClick={handleCancel}>
-          Cancel
-        </button>
+        <div className="form-action-buttons my-8">
+          <button className="btn btn--primary" type="submit">
+            Save
+          </button>
+          <button
+            className="btn btn--secondary"
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

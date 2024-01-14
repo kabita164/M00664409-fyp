@@ -9,3 +9,8 @@
   min-height: 120px;
   font-size: 16px;
 }
+
+.form-action-buttons {
+  display: flex;
+  gap: 2rem;
+}
