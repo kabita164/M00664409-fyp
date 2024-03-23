@@ -30,7 +30,7 @@ const Header = () => {
               <Link to="/">Analysis</Link>
             </li>
             <li>
-              <Link to="/">Account</Link>
+              <Link to="/signout">Log Out</Link>
             </li>
           </ul>
         </nav>
