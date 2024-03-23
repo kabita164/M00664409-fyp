@@ -1,41 +1,58 @@
-import {
-  faHeart,
-  faPencil,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
+import {
+  doc,
+  getDocs,
+  deleteDoc,
+  query,
+  orderBy,
+  where,
+  collection,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { useAuth } from "../contexts/AuthContext";
 import "./Journals.css";
 
 const Journals = () => {
   const [entries, setEntries] = useState([]);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
+    const loadEntries = async () => {
+      if (currentUser) {
+        const q = query(
+          collection(db, "journalEntries"),
+          where("userId", "==", currentUser.uid),
+          orderBy("timestamp", "desc")
+        );
+
+        const querySnapshot = await getDocs(q);
+        const entriesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setEntries(entriesData);
+      }
+    };
+
     loadEntries();
-  }, []);
+  }, [currentUser]);
 
-  const loadEntries = () => {
-    const storedEntries = JSON.parse(
-      localStorage.getItem("journalEntries") || "[]"
-    );
-    storedEntries.sort((a, b) => b.timestamp - a.timestamp);
-    setEntries(storedEntries);
-  };
-
-  const deleteEntry = (entryId) => {
+  const deleteEntry = async (entryId) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this entry?"
     );
     if (!isConfirmed) {
-      return; // Do nothing if the user cancels the action
+      return;
     }
 
-    const updatedEntries = entries.filter((entry) => entry.id !== entryId);
-    localStorage.setItem("journalEntries", JSON.stringify(updatedEntries));
-    loadEntries(); // Refresh the entries list
+    await deleteDoc(doc(db, "journalEntries", entryId));
+    setEntries(entries.filter((entry) => entry.id !== entryId)); // update entries state
   };
 
   return (
