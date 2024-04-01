@@ -1,6 +1,16 @@
-import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { faHeart as faRegularHeart } from "@fortawesome/free-regular-svg-icons";
+import {
+  faPencil,
+  faTrashCan,
+  faSmileBeam,
+  faSmile,
+  faFaceMeh,
+  faFrownOpen,
+  faFaceTired,
+  faBookmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as faRegularBookmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
@@ -12,10 +22,21 @@ import {
   orderBy,
   where,
   collection,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { useAuth } from "../contexts/AuthContext";
 import "./Journals.css";
+import { interpretSentiment } from "../analysis/analyseSentiment";
+
+library.add(
+  faSmileBeam,
+  faSmile,
+  faFaceMeh,
+  faFrownOpen,
+  faFaceTired,
+  faBookmark
+);
 
 const Journals = () => {
   const [entries, setEntries] = useState([]);
@@ -24,10 +45,11 @@ const Journals = () => {
   useEffect(() => {
     const loadEntries = async () => {
       if (currentUser) {
+        console.log("currentUser", currentUser.uid);
         const q = query(
           collection(db, "journalEntries"),
           where("userId", "==", currentUser.uid),
-          orderBy("timestamp", "desc")
+          orderBy("dateCreated", "desc")
         );
 
         const querySnapshot = await getDocs(q);
@@ -62,6 +84,8 @@ const Journals = () => {
         {entries.length === 0 && <div>Nothing added yet</div>}
 
         {entries.map((entry) => {
+          const sentimentInfo = interpretSentiment(entry.sentiment);
+
           return (
             <li key={entry.id} className="journal-entry">
               <div className="entry-detail">
@@ -76,16 +100,24 @@ const Journals = () => {
                 />
               </div>
 
-              <div className="entry-actions">
-                <FontAwesomeIcon icon={faRegularHeart} size="lg" />
+              <div className="entry-footer">
+                <div className="entry-actions">
+                  <Link to={`entry/edit/${entry.id}`}>
+                    <FontAwesomeIcon icon={faPencil} size="lg" />
+                  </Link>
 
-                <Link to={`entry/edit/${entry.id}`}>
-                  <FontAwesomeIcon icon={faPencil} size="lg" />
-                </Link>
+                  <button onClick={() => deleteEntry(entry.id)}>
+                    <FontAwesomeIcon icon={faTrashCan} size="lg" />
+                  </button>
+                </div>
 
-                <button onClick={() => deleteEntry(entry.id)}>
-                  <FontAwesomeIcon icon={faTrashCan} size="lg" />
-                </button>
+                <div className="entry-sentiment">
+                  <FontAwesomeIcon
+                    icon={`fa-solid ${sentimentInfo.icon}`}
+                    color={sentimentInfo.color}
+                    size="2xl"
+                  />
+                </div>
               </div>
             </li>
           );

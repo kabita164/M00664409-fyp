@@ -15,6 +15,11 @@
   margin-bottom: 1.5rem;
 }
 
+.entry-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
 .entry-title {
   font-weight: 500;
   margin-top: 0;

@@ -54,8 +54,10 @@ const JournalForm = () => {
     const entryData = {
       title: entryTitle,
       content: entryContent,
-      timestamp: Date.now(),
       userId: currentUser.uid,
+      sentiment: sentimentResult,
+      dateEdited: new Date(),
+      bookmarked: false,
     };
 
     try {
@@ -65,6 +67,7 @@ const JournalForm = () => {
         await setDoc(entryRef, entryData);
       } else {
         // Add new entry
+        entryData.dateCreated = entryData.dateEdited;
         await addDoc(collection(db, "journalEntries"), entryData);
       }
       navigate("/");
