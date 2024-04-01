@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../firebaseConfig";
 import { useAuth } from "../contexts/AuthContext";
+import { analyseSentiment } from "../analysis/analyseSentiment";
 
 const JournalForm = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const JournalForm = () => {
   const [entryTitle, setEntryTitle] = useState("");
   const [entryContent, setEntryContent] = useState("");
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -44,6 +46,10 @@ const JournalForm = () => {
       setError("Content cannot be empty.");
       return;
     }
+    setIsSaving(true);
+
+    const sentimentResult = await analyseSentiment(entryContent);
+    console.log("Sentiment result:", sentimentResult);
 
     const entryData = {
       title: entryTitle,
@@ -66,6 +72,7 @@ const JournalForm = () => {
       console.error("Error saving entry:", error);
       setError("Failed to save the entry. Please try again.");
     }
+    setIsSaving(false);
   };
 
   const handleSubmit = (event) => {
@@ -102,8 +109,12 @@ const JournalForm = () => {
           placeholder="Write your journal entry here..."
         />
         <div className="form-action-buttons my-8">
-          <button className="btn btn--primary" type="submit">
-            Save
+          <button
+            className="btn btn--primary"
+            type="submit"
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save"}
           </button>
           <button
             className="btn btn--secondary"
