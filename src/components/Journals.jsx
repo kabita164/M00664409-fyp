@@ -77,6 +77,22 @@ const Journals = () => {
     setEntries(entries.filter((entry) => entry.id !== entryId)); // update entries state
   };
 
+  const toggleBookmark = async (entryId, currentBookmarkStatus) => {
+    const entryRef = doc(db, "journalEntries", entryId);
+    await updateDoc(entryRef, {
+      bookmarked: !currentBookmarkStatus,
+    });
+
+    setEntries(
+      entries.map((entry) => {
+        if (entry.id === entryId) {
+          return { ...entry, bookmarked: !currentBookmarkStatus };
+        }
+        return entry;
+      })
+    );
+  };
+
   return (
     <div>
       <h2>Entries</h2>
@@ -102,6 +118,15 @@ const Journals = () => {
 
               <div className="entry-footer">
                 <div className="entry-actions">
+                  <button
+                    onClick={() => toggleBookmark(entry.id, entry.bookmarked)}
+                  >
+                    <FontAwesomeIcon
+                      icon={entry.bookmarked ? faBookmark : faRegularBookmark}
+                      size="lg"
+                    />
+                  </button>
+
                   <Link to={`entry/edit/${entry.id}`}>
                     <FontAwesomeIcon icon={faPencil} size="lg" />
                   </Link>
