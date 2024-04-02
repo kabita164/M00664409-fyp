@@ -1,6 +1,12 @@
+.journal-container {
+  display: flex;
+  gap: 16px;
+}
+
 .journal-entries {
   display: grid;
   gap: 2.6rem;
+  flex: 1;
 }
 
 .journal-entry {
@@ -37,4 +43,31 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.search-bar {
+  margin-bottom: 8px;
+}
+
+.search-bar input {
+  padding: 6px 10px;
+  border: 1px solid #d1d1d1;
+  border-radius: 6px;
+}
+
+.journal-filters {
+  width: 200px;
+}
+
+.journal-filters .filter {
+  font-size: 14px;
+}
+
+.journal-filters .filter label {
+  display: flex;
+  align-items: center;
+}
+
+.journal-filters .filter [type="checkbox"] {
+  margin-right: 6px;
 }

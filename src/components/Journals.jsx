@@ -40,30 +40,45 @@ library.add(
 
 const Journals = () => {
   const [entries, setEntries] = useState([]);
+  const [showBookmarked, setShowBookmarked] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { currentUser } = useAuth();
 
   useEffect(() => {
     const loadEntries = async () => {
       if (currentUser) {
-        console.log("currentUser", currentUser.uid);
-        const q = query(
+        let q = query(
           collection(db, "journalEntries"),
           where("userId", "==", currentUser.uid),
           orderBy("dateCreated", "desc")
         );
 
+        // adjust query for bookmarked filter
+        if (showBookmarked) {
+          q = query(q, where("bookmarked", "==", true));
+        }
+
         const querySnapshot = await getDocs(q);
-        const entriesData = querySnapshot.docs.map((doc) => ({
+        let entriesData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+
+        // apply search query filter
+        if (searchQuery) {
+          entriesData = entriesData.filter(
+            (entry) =>
+              entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              entry.content.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
 
         setEntries(entriesData);
       }
     };
 
     loadEntries();
-  }, [currentUser]);
+  }, [currentUser, showBookmarked, searchQuery]);
 
   const deleteEntry = async (entryId) => {
     const isConfirmed = window.confirm(
@@ -93,61 +108,92 @@ const Journals = () => {
     );
   };
 
+  const toggleShowBookmarked = () => {
+    setShowBookmarked(!showBookmarked);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <div>
       <h2>Entries</h2>
-      <ul className="journal-entries">
-        {entries.length === 0 && <div>Nothing added yet</div>}
+      <div className="journal-container">
+        <aside className="journal-filters">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search entries..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
 
-        {entries.map((entry) => {
-          const sentimentInfo = interpretSentiment(entry.sentiment);
+          <div className="filter">
+            <label>
+              <input
+                type="checkbox"
+                checked={showBookmarked}
+                onChange={toggleShowBookmarked}
+              />
+              Bookmarked
+            </label>
+          </div>
+        </aside>
+        <ul className="journal-entries">
+          {entries.length === 0 && <div>Nothing added yet</div>}
 
-          return (
-            <li key={entry.id} className="journal-entry">
-              <div className="entry-detail">
-                <Link to={`entry/edit/${entry.id}`}>
-                  <h4 className="entry-title">{entry.title}</h4>
-                </Link>
-                <div
-                  className="entry-content-trimmed"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(entry.content),
-                  }}
-                />
-              </div>
+          {entries.map((entry) => {
+            const sentimentInfo = interpretSentiment(entry.sentiment);
 
-              <div className="entry-footer">
-                <div className="entry-actions">
-                  <button
-                    onClick={() => toggleBookmark(entry.id, entry.bookmarked)}
-                  >
-                    <FontAwesomeIcon
-                      icon={entry.bookmarked ? faBookmark : faRegularBookmark}
-                      size="lg"
-                    />
-                  </button>
-
+            return (
+              <li key={entry.id} className="journal-entry">
+                <div className="entry-detail">
                   <Link to={`entry/edit/${entry.id}`}>
-                    <FontAwesomeIcon icon={faPencil} size="lg" />
+                    <h4 className="entry-title">{entry.title}</h4>
                   </Link>
-
-                  <button onClick={() => deleteEntry(entry.id)}>
-                    <FontAwesomeIcon icon={faTrashCan} size="lg" />
-                  </button>
-                </div>
-
-                <div className="entry-sentiment">
-                  <FontAwesomeIcon
-                    icon={`fa-solid ${sentimentInfo.icon}`}
-                    color={sentimentInfo.color}
-                    size="2xl"
+                  <div
+                    className="entry-content-trimmed"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(entry.content),
+                    }}
                   />
                 </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+
+                <div className="entry-footer">
+                  <div className="entry-actions">
+                    <button
+                      onClick={() => toggleBookmark(entry.id, entry.bookmarked)}
+                    >
+                      <FontAwesomeIcon
+                        icon={entry.bookmarked ? faBookmark : faRegularBookmark}
+                        size="lg"
+                      />
+                    </button>
+
+                    <Link to={`entry/edit/${entry.id}`}>
+                      <FontAwesomeIcon icon={faPencil} size="lg" />
+                    </Link>
+
+                    <button onClick={() => deleteEntry(entry.id)}>
+                      <FontAwesomeIcon icon={faTrashCan} size="lg" />
+                    </button>
+                  </div>
+
+                  <div className="entry-sentiment">
+                    <FontAwesomeIcon
+                      icon={`fa-solid ${sentimentInfo.icon}`}
+                      color={sentimentInfo.color}
+                      size="2xl"
+                    />
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };
