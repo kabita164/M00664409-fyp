@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { doc, getDoc, setDoc, addDoc, collection } from "firebase/firestore";
+import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getFormattedDate } from "../utils/utils";
@@ -51,23 +51,28 @@ const JournalForm = () => {
     const sentimentResult = await analyseSentiment(entryContent);
     console.log("Sentiment result:", sentimentResult);
 
-    const entryData = {
-      title: entryTitle,
-      content: entryContent,
-      userId: currentUser.uid,
-      sentiment: sentimentResult,
-      dateEdited: new Date(),
-      bookmarked: false,
-    };
-
     try {
       if (id) {
         // Update existing entry
         const entryRef = doc(db, "journalEntries", id);
-        await setDoc(entryRef, entryData);
+        const updateData = {
+          title: entryTitle,
+          content: entryContent,
+          sentiment: sentimentResult,
+          dateEdited: new Date(),
+        };
+        await updateDoc(entryRef, updateData);
       } else {
         // Add new entry
-        entryData.dateCreated = entryData.dateEdited;
+        const entryData = {
+          title: entryTitle,
+          content: entryContent,
+          userId: currentUser.uid,
+          sentiment: sentimentResult,
+          dateCreated: new Date(),
+          dateEdited: new Date(),
+          bookmarked: false,
+        };
         await addDoc(collection(db, "journalEntries"), entryData);
       }
       navigate("/");
