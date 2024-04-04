@@ -1,12 +1,12 @@
-import { useState } from "react";
 import "./App.css";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import JournalForm from "./components/JournalForm";
 import { useAuth } from "./contexts/AuthContext";
 import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
+import MoodTrends from "./components/MoodTrends";
 
 function App() {
   const { currentUser } = useAuth();
@@ -22,6 +22,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/entry/new" element={<JournalForm />} />
             <Route path="/entry/edit/:id" element={<JournalForm />} />
+            <Route path="/analysis" element={<MoodTrends />} />
             <Route path="/signout" element={<SignOut />} />
           </Routes>
         </>

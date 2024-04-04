@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
@@ -27,7 +26,7 @@ const Header = () => {
               <Link to="/">Entries</Link>
             </li>
             <li>
-              <Link to="/">Analysis</Link>
+              <Link to="/analysis">Analysis</Link>
             </li>
             <li>
               <Link to="/signout">Log Out</Link>
