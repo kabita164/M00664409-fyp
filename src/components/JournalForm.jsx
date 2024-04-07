@@ -9,7 +9,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../firebaseConfig";
 import { useAuth } from "../contexts/AuthContext";
-import { analyseSentiment } from "../analysis/analyseSentiment";
+import {
+  analyseSentiment,
+  interpretSentiment,
+} from "../analysis/analyseSentiment";
 
 const JournalForm = () => {
   const { id } = useParams();
@@ -49,7 +52,8 @@ const JournalForm = () => {
     setIsSaving(true);
 
     const sentimentResult = await analyseSentiment(entryContent);
-    console.log("Sentiment result:", sentimentResult);
+    const mood = interpretSentiment(sentimentResult);
+    console.log("Sentiment result:", sentimentResult, mood);
 
     try {
       if (id) {
@@ -59,6 +63,10 @@ const JournalForm = () => {
           title: entryTitle,
           content: entryContent,
           sentiment: sentimentResult,
+          mood: {
+            label: mood.label,
+            score: mood.moodScore,
+          },
           dateEdited: new Date(),
         };
         await updateDoc(entryRef, updateData);
@@ -69,6 +77,10 @@ const JournalForm = () => {
           content: entryContent,
           userId: currentUser.uid,
           sentiment: sentimentResult,
+          mood: {
+            label: mood.label,
+            score: mood.moodScore,
+          },
           dateCreated: new Date(),
           dateEdited: new Date(),
           bookmarked: false,

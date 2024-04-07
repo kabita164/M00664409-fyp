@@ -38,10 +38,19 @@ library.add(
   faBookmark
 );
 
+const moodOptions = [
+  "Very Positive",
+  "Positive",
+  "Neutral",
+  "Negative",
+  "Very Negative",
+];
+
 const Journals = () => {
   const [entries, setEntries] = useState([]);
   const [showBookmarked, setShowBookmarked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [moodFilters, setMoodFilters] = useState([]);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -73,12 +82,18 @@ const Journals = () => {
           );
         }
 
+        if (moodFilters.length > 0) {
+          entriesData = entriesData.filter((entry) =>
+            moodFilters.includes(entry.mood.label)
+          );
+        }
+
         setEntries(entriesData);
       }
     };
 
     loadEntries();
-  }, [currentUser, showBookmarked, searchQuery]);
+  }, [currentUser, showBookmarked, searchQuery, moodFilters]);
 
   const deleteEntry = async (entryId) => {
     const isConfirmed = window.confirm(
@@ -116,6 +131,15 @@ const Journals = () => {
     setSearchQuery(event.target.value);
   };
 
+  const handleMoodFilterChange = (event) => {
+    const { value, checked } = event.target;
+    if (checked && !moodFilters.includes(value)) {
+      setMoodFilters([...moodFilters, value]);
+    } else {
+      setMoodFilters(moodFilters.filter((mood) => mood !== value));
+    }
+  };
+
   return (
     <div>
       <h2>Entries</h2>
@@ -139,6 +163,21 @@ const Journals = () => {
               />
               Bookmarked
             </label>
+          </div>
+
+          <div className="filter moods-filter">
+            <h6>Moods</h6>
+            {moodOptions.map((moodLabel) => (
+              <label key={moodLabel}>
+                <input
+                  type="checkbox"
+                  value={moodLabel}
+                  onChange={handleMoodFilterChange}
+                  checked={moodFilters.includes(moodLabel)}
+                />
+                {moodLabel}
+              </label>
+            ))}
           </div>
         </aside>
         <ul className="journal-entries">

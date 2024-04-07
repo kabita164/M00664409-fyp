@@ -28,22 +28,30 @@ export const interpretSentiment = (sentiment) => {
   if (label === "POSITIVE") {
     if (score > VERY_POSITIVE_THRESHOLD) {
       return {
+        moodScore: 5,
         label: "Very Positive",
         icon: "fa-face-smile-beam",
         color: "#4caf50",
       };
     } else if (score > POSITIVE_THRESHOLD) {
-      return { label: "Positive", icon: "fa-smile", color: "#8bc34a" };
+      return {
+        moodScore: 4,
+        label: "Positive",
+        icon: "fa-smile",
+        color: "#8bc34a",
+      };
     }
   } else if (label === "NEGATIVE") {
     if (score > VERY_NEGATIVE_THRESHOLD) {
       return {
+        moodScore: 1,
         label: "Very Negative",
         icon: "fa-face-tired",
         color: "#f44336",
       };
     } else if (score > NEGATIVE_THRESHOLD) {
       return {
+        moodScore: 2,
         label: "Negative",
         icon: "fa-face-frown-open",
         color: "#ff9800",
@@ -52,5 +60,10 @@ export const interpretSentiment = (sentiment) => {
   }
 
   // Neutral as default
-  return { label: "Neutral", icon: "fa-face-meh", color: "#9e9e9e" };
+  return {
+    moodScore: 3,
+    label: "Neutral",
+    icon: "fa-face-meh",
+    color: "#9e9e9e",
+  };
 };
