@@ -11,17 +11,34 @@ export const getFormattedDate = () => {
 
 // generate date range for the last 14 days
 export const getLast14Days = () => {
-  const endDate = new Date();
-  endDate.setHours(23, 59, 59, 999);
-  const startDate = new Date();
-  startDate.setDate(endDate.getDate() - 13);
-  startDate.setHours(0, 0, 0, 0);
+  const endDate = new Date(
+    Date.UTC(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      23,
+      59,
+      59,
+      999
+    )
+  );
+  const startDate = new Date(
+    Date.UTC(
+      endDate.getUTCFullYear(),
+      endDate.getUTCMonth(),
+      endDate.getUTCDate() - 13,
+      0,
+      0,
+      0,
+      0
+    )
+  );
 
   let dateArray = [];
   for (
     let dt = new Date(startDate);
     dt <= endDate;
-    dt.setDate(dt.getDate() + 1)
+    dt.setUTCDate(dt.getUTCDate() + 1)
   ) {
     dateArray.push(new Date(dt));
   }
