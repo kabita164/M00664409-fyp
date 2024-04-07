@@ -1,0 +1,11 @@
+.analysis-page .chart {
+  background-color: white;
+  padding: 24px;
+  margin-bottom: 40px;
+  border-radius: 4px;
+}
+
+.analysis-page .chart h3 {
+  margin-top: 0;
+  text-align: center;
+}

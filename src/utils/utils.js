@@ -44,3 +44,11 @@ export const getLast14Days = () => {
   }
   return dateArray;
 };
+
+export const allMoods = [
+  "Very Positive",
+  "Positive",
+  "Neutral",
+  "Negative",
+  "Very Negative",
+];

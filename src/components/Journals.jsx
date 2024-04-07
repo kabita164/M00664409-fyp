@@ -28,6 +28,7 @@ import { db } from "../firebaseConfig";
 import { useAuth } from "../contexts/AuthContext";
 import "./Journals.css";
 import { interpretSentiment } from "../analysis/analyseSentiment";
+import { allMoods } from "../utils/utils";
 
 library.add(
   faSmileBeam,
@@ -37,14 +38,6 @@ library.add(
   faFaceTired,
   faBookmark
 );
-
-const moodOptions = [
-  "Very Positive",
-  "Positive",
-  "Neutral",
-  "Negative",
-  "Very Negative",
-];
 
 const Journals = () => {
   const [entries, setEntries] = useState([]);
@@ -167,7 +160,7 @@ const Journals = () => {
 
           <div className="filter moods-filter">
             <h6>Moods</h6>
-            {moodOptions.map((moodLabel) => (
+            {allMoods.map((moodLabel) => (
               <label key={moodLabel}>
                 <input
                   type="checkbox"

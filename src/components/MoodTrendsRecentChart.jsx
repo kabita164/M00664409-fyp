@@ -77,8 +77,7 @@ const MoodTrendsRecentChart = ({ entries }) => {
     scales: {
       x: {
         title: {
-          display: true,
-          text: "Date",
+          display: false,
         },
         offset: true,
       },
