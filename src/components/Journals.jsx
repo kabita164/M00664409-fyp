@@ -182,7 +182,7 @@ const Journals = () => {
             return (
               <li key={entry.id} className="journal-entry">
                 <div className="entry-detail">
-                  <Link to={`entry/edit/${entry.id}`}>
+                  <Link to={`/entry/edit/${entry.id}`}>
                     <h4 className="entry-title">{entry.title}</h4>
                   </Link>
                   <div
@@ -204,7 +204,7 @@ const Journals = () => {
                       />
                     </button>
 
-                    <Link to={`entry/edit/${entry.id}`}>
+                    <Link to={`/entry/edit/${entry.id}`}>
                       <FontAwesomeIcon icon={faPencil} size="lg" />
                     </Link>
 

@@ -31,6 +31,8 @@ const JournalForm = () => {
   useEffect(() => {
     if (id) {
       loadEntry(id).catch(console.error);
+    } else {
+      setIsLoading(false);
     }
   }, [id]);
 
