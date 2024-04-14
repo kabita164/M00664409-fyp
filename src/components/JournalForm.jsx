@@ -5,6 +5,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { getFormattedDate } from "../utils/utils";
 import "./JournalForm.css";
+import BarLoader from "react-spinners/BarLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../firebaseConfig";
@@ -19,18 +20,23 @@ const JournalForm = () => {
   const navigate = useNavigate();
   const [entryTitle, setEntryTitle] = useState("");
   const [entryContent, setEntryContent] = useState("");
+  const [journalDate, setJournalDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
 
   useEffect(() => {
     if (id) {
       loadEntry(id).catch(console.error);
-    } else {
-      setEntryTitle(getFormattedDate());
-      setEntryContent("");
     }
   }, [id]);
+
+  useEffect(() => {
+    setEntryTitle(getFormattedDate(journalDate));
+  }, [journalDate]);
 
   const loadEntry = async (entryId) => {
     const docRef = doc(db, "journalEntries", entryId);
@@ -39,13 +45,16 @@ const JournalForm = () => {
       const entry = docSnap.data();
       setEntryTitle(entry.title);
       setEntryContent(entry.content);
+      setJournalDate(entry.journalDate.toDate().toISOString().split("T")[0]);
     } else {
       console.log("No such document!");
     }
+    setIsLoading(false);
   };
 
   const saveEntry = async () => {
-    if (!entryContent.trim()) {
+    const textContent = entryContent.replace(/<[^>]*>/g, "").trim();
+    if (!textContent) {
       setError("Content cannot be empty.");
       return;
     }
@@ -55,36 +64,29 @@ const JournalForm = () => {
     const mood = interpretSentiment(sentimentResult);
     console.log("Sentiment result:", sentimentResult, mood);
 
+    const entryData = {
+      title: entryTitle,
+      content: entryContent,
+      sentiment: sentimentResult,
+      mood: {
+        label: mood.label,
+        score: mood.moodScore,
+      },
+      journalDate: new Date(journalDate),
+      dateEdited: new Date(),
+    };
+
     try {
       if (id) {
         // Update existing entry
         const entryRef = doc(db, "journalEntries", id);
-        const updateData = {
-          title: entryTitle,
-          content: entryContent,
-          sentiment: sentimentResult,
-          mood: {
-            label: mood.label,
-            score: mood.moodScore,
-          },
-          dateEdited: new Date(),
-        };
-        await updateDoc(entryRef, updateData);
+        await updateDoc(entryRef, entryData);
       } else {
         // Add new entry
-        const entryData = {
-          title: entryTitle,
-          content: entryContent,
-          userId: currentUser.uid,
-          sentiment: sentimentResult,
-          mood: {
-            label: mood.label,
-            score: mood.moodScore,
-          },
-          dateCreated: new Date(),
-          dateEdited: new Date(),
-          bookmarked: false,
-        };
+        entryData.userId = currentUser.uid;
+        (entryData.journalDate = new Date(journalDate)),
+          (entryData.dateEdited = new Date()),
+          (entryData.bookmarked = false);
         await addDoc(collection(db, "journalEntries"), entryData);
       }
       navigate("/");
@@ -93,6 +95,10 @@ const JournalForm = () => {
       setError("Failed to save the entry. Please try again.");
     }
     setIsSaving(false);
+  };
+
+  const handleDateChange = (event) => {
+    setJournalDate(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -110,18 +116,38 @@ const JournalForm = () => {
     setEntryContent("");
   };
 
+  if (isLoading) {
+    return (
+      <div className="loading-overlay">
+        <BarLoader color="#000" loading={true} size={150} />
+      </div>
+    );
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <div className="container mx-auto my-8 px-8">
       <h2>{id ? "Edit Journal Entry" : "Create Journal Entry"}</h2>
 
       <form onSubmit={handleSubmit}>
-        {error && <div style={{ color: "red" }}>{error}</div>}{" "}
+        {error && <div className="error-panel">{error}</div>}{" "}
         <div className="form-nav">
           <button onClick={() => navigate(-1)}>
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>
           <h5 className="entry-title">{entryTitle}</h5>
-          <span></span>
+          <div className="date-input-wrapper">
+            <label>
+              <span className="date-label">Date:</span>
+              <input
+                type="date"
+                value={journalDate}
+                onChange={handleDateChange}
+                max={today}
+              />
+            </label>
+          </div>
         </div>
         <ReactQuill
           value={entryContent}

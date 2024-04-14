@@ -52,7 +52,7 @@ const Journals = () => {
         let q = query(
           collection(db, "journalEntries"),
           where("userId", "==", currentUser.uid),
-          orderBy("dateCreated", "desc")
+          orderBy("journalDate", "desc")
         );
 
         // adjust query for bookmarked filter

@@ -1,7 +1,11 @@
 // format today's date like "Saturday, 4 Jan 2024"
-export const getFormattedDate = () => {
-  const now = new Date();
-  return now.toLocaleDateString("en-GB", {
+export const getFormattedDate = (date) => {
+  if (!date) {
+    date = new Date();
+  } else {
+    date = new Date(date);
+  }
+  return date.toLocaleDateString("en-GB", {
     weekday: "long", // e.g., Saturday
     day: "numeric", // e.g., 4
     month: "short", // e.g., Jan

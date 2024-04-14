@@ -25,14 +25,14 @@ const MoodTrends = () => {
         let q = query(
           collection(db, "journalEntries"),
           where("userId", "==", currentUser.uid),
-          orderBy("dateCreated", "desc")
+          orderBy("journalDate", "desc")
         );
 
         const querySnapshot = await getDocs(q);
         const fetchedEntries = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          dateCreated: doc.data().dateCreated.toDate(), // convert Firestore Timestamp to Date
+          journalDate: doc.data().journalDate.toDate(), // convert Firestore Timestamp to Date
         }));
 
         setEntries(fetchedEntries);
@@ -54,7 +54,7 @@ const MoodTrends = () => {
     };
 
     entries.forEach((entry) => {
-      const day = new Date(entry.dateCreated).toLocaleDateString("en-GB", {
+      const day = new Date(entry.journalDate).toLocaleDateString("en-GB", {
         weekday: "long",
       });
       const moodScore = moodValue[entry.mood.label];

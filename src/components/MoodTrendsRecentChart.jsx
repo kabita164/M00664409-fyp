@@ -27,9 +27,9 @@ const MoodTrendsRecentChart = ({ entries }) => {
 
   const filteredData = entries.filter((entry) => {
     const entryDateNormalized = new Date(
-      entry.dateCreated.getFullYear(),
-      entry.dateCreated.getMonth(),
-      entry.dateCreated.getDate()
+      entry.journalDate.getFullYear(),
+      entry.journalDate.getMonth(),
+      entry.journalDate.getDate()
     );
     return allDates.some(
       (date) =>
@@ -42,7 +42,7 @@ const MoodTrendsRecentChart = ({ entries }) => {
   const preparedData = allDates.map((date) => {
     const dateString = date.toISOString().split("T")[0];
     const foundEntry = filteredData.find((entry) => {
-      const entryDateString = entry.dateCreated.toISOString().split("T")[0];
+      const entryDateString = entry.journalDate.toISOString().split("T")[0];
       return dateString === entryDateString;
     });
 
