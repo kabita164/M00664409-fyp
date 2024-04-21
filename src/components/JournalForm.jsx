@@ -91,7 +91,7 @@ const JournalForm = () => {
           (entryData.bookmarked = false);
         await addDoc(collection(db, "journalEntries"), entryData);
       }
-      navigate("/");
+      navigate("/entries");
     } catch (error) {
       console.error("Error saving entry:", error);
       setError("Failed to save the entry. Please try again.");
@@ -110,7 +110,7 @@ const JournalForm = () => {
 
   const handleCancel = () => {
     resetForm();
-    navigate("/");
+    navigate("/entries");
   };
 
   const resetForm = () => {

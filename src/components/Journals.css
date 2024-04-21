@@ -33,11 +33,11 @@
   margin-bottom: 0.5rem;
 }
 
-.entry-content-trimmed {
+.entry-content-trimmed * {
   white-space: nowrap;
-  width: 95%;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .entry-actions {
