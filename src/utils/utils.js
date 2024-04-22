@@ -13,6 +13,12 @@ export const getFormattedDate = (date) => {
   });
 };
 
+export const getLocalDate = () => {
+  const now = new Date();
+  const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return localDate.toISOString().split("T")[0];
+};
+
 // generate date range for the last 14 days
 export const getLast14Days = () => {
   const endDate = new Date(

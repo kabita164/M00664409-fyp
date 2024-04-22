@@ -7,7 +7,7 @@
 
 .content-editor {
   position: relative;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 }
 
 .ql-editor {
@@ -48,6 +48,7 @@ button.audio-btn.stop-recording {
 .form-action-buttons {
   display: flex;
   gap: 2rem;
+  padding-top: 2rem;
 }
 
 .loading-overlay {

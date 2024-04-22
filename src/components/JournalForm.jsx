@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { WhisperSTT } from "whisper-speech-to-text";
-import { getFormattedDate } from "../utils/utils";
+import { getFormattedDate, getLocalDate } from "../utils/utils";
 import "./JournalForm.css";
 import BarLoader from "react-spinners/BarLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,15 +25,14 @@ const JournalForm = () => {
   const navigate = useNavigate();
   const [entryTitle, setEntryTitle] = useState("");
   const [entryContent, setEntryContent] = useState("");
-  const [journalDate, setJournalDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [journalDate, setJournalDate] = useState(getLocalDate());
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [micError, setMicError] = useState("");
   const whisperSTT = useRef(null);
   let quillRef = useRef(null);
 
@@ -132,8 +131,16 @@ const JournalForm = () => {
   };
 
   const handleStartRecording = async () => {
-    setIsRecording(true);
-    await whisperSTT.current.startRecording();
+    try {
+      setIsRecording(true);
+      await whisperSTT.current.startRecording();
+    } catch (error) {
+      console.log("Error starting recording:", error);
+      setMicError(
+        "Please ensure you have granted microphone permission to the browser."
+      );
+      setIsRecording(false);
+    }
   };
 
   const handleStopRecording = async () => {
@@ -159,8 +166,6 @@ const JournalForm = () => {
     );
   }
 
-  const today = new Date().toISOString().split("T")[0];
-
   return (
     <div className="container mx-auto my-8 px-8">
       <h2>{id ? "Edit Journal Entry" : "Create Journal Entry"}</h2>
@@ -179,7 +184,7 @@ const JournalForm = () => {
                 type="date"
                 value={journalDate}
                 onChange={handleDateChange}
-                max={today}
+                max={getLocalDate()}
               />
             </label>
           </div>
@@ -219,6 +224,7 @@ const JournalForm = () => {
             )}
           </div>
         </div>
+        {micError && <div className="error-panel">{micError}</div>}
         <div className="form-action-buttons my-8">
           <button
             className="btn btn--primary"
