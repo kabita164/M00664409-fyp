@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { WhisperSTT } from "whisper-speech-to-text";
 import { getFormattedDate } from "../utils/utils";
 import "./JournalForm.css";
 import BarLoader from "react-spinners/BarLoader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faMicrophoneLines,
+  faCircleStop,
+} from "@fortawesome/free-solid-svg-icons";
 import { db } from "../firebaseConfig";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -27,6 +32,14 @@ const JournalForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const whisperSTT = useRef(null);
+  let quillRef = useRef(null);
+
+  useEffect(() => {
+    whisperSTT.current = new WhisperSTT(import.meta.env.VITE_WHISPER_KEY);
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -118,6 +131,26 @@ const JournalForm = () => {
     setEntryContent("");
   };
 
+  const handleStartRecording = async () => {
+    setIsRecording(true);
+    await whisperSTT.current.startRecording();
+  };
+
+  const handleStopRecording = async () => {
+    setIsTranscribing(true);
+    await whisperSTT.current.stopRecording((text) => {
+      appendTranscript(text);
+      setIsTranscribing(false);
+    });
+    setIsRecording(false);
+  };
+
+  const appendTranscript = (text) => {
+    const editor = quillRef.current.getEditor();
+    const length = entryContent.length === 0 ? 0 : editor.getLength(); // get end position
+    editor.insertText(length, text);
+  };
+
   if (isLoading) {
     return (
       <div className="loading-overlay">
@@ -151,11 +184,41 @@ const JournalForm = () => {
             </label>
           </div>
         </div>
-        <ReactQuill
-          value={entryContent}
-          onChange={setEntryContent}
-          placeholder="Write your journal entry here..."
-        />
+        <div className="content-editor">
+          <ReactQuill
+            value={entryContent}
+            onChange={setEntryContent}
+            placeholder="Write your journal entry here..."
+            ref={quillRef}
+          />
+
+          <div className="audio-text-container">
+            {isRecording ? (
+              <button
+                className="btn audio-btn stop-recording"
+                onClick={handleStopRecording}
+                type="button"
+              >
+                <FontAwesomeIcon color="#cb0000" icon={faCircleStop} />
+                Stop and Transcribe
+              </button>
+            ) : (
+              <button
+                className="btn audio-btn"
+                onClick={handleStartRecording}
+                type="button"
+              >
+                <FontAwesomeIcon color="#cb0000" icon={faMicrophoneLines} />
+                Start Speech-to-Text
+              </button>
+            )}
+            {isTranscribing && (
+              <div className="transcribing-indicator">
+                Transcribing to text...
+              </div>
+            )}
+          </div>
+        </div>
         <div className="form-action-buttons my-8">
           <button
             className="btn btn--primary"

@@ -5,9 +5,44 @@
   margin-bottom: 1.5rem;
 }
 
+.content-editor {
+  position: relative;
+  margin-bottom: 4rem;
+}
+
 .ql-editor {
   min-height: 120px;
   font-size: 16px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #d7d4d4;
+}
+
+.audio-text-container {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+button.audio-btn {
+  background-color: ghostwhite;
+  color: var(--heading-color);
+  font-size: 1.4rem;
+  border: none;
+}
+
+button.audio-btn.stop-recording {
+  color: #cb0000;
+}
+
+.audio-text-container button svg {
+  margin-right: 0.75rem;
+}
+
+.transcribing-indicator {
+  font-size: 14px;
+  font-style: italic;
+  margin-left: 1rem;
 }
 
 .form-action-buttons {

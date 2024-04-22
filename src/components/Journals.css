@@ -33,6 +33,11 @@
   margin-bottom: 0.5rem;
 }
 
+.entry-content-trimmed {
+  max-height: 70px;
+  overflow: hidden;
+}
+
 .entry-content-trimmed * {
   white-space: nowrap;
   overflow: hidden;
