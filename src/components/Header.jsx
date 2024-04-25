@@ -9,14 +9,7 @@ const Header = () => {
           id="navbar"
           className="flex flex-wrap items-center justify-between mx-auto py-4"
         >
-          <a
-            href="#"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <span className="self-center font-semibold whitespace-nowrap">
-              Logo
-            </span>
-          </a>
+          <span></span>
 
           <ul className="links">
             <li>
