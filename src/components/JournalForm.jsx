@@ -37,7 +37,13 @@ const JournalForm = () => {
   let quillRef = useRef(null);
 
   useEffect(() => {
-    whisperSTT.current = new WhisperSTT(import.meta.env.VITE_WHISPER_KEY);
+    try {
+      const key = import.meta.env.VITE_WHISPER_KEY;
+      if (!key) throw new Error("Whisper key is missing.");
+      whisperSTT.current = new WhisperSTT(key);
+    } catch (error) {
+      console.error("Whisper initialization error:", error.message);
+    }
   }, []);
 
   useEffect(() => {
@@ -213,7 +219,7 @@ const JournalForm = () => {
                 className="btn audio-btn"
                 onClick={handleStartRecording}
                 type="button"
-                disabled={isTranscribing}
+                disabled={isTranscribing || whisperSTT.current === null}
               >
                 <FontAwesomeIcon color="#cb0000" icon={faMicrophoneLines} />
                 Start Speech-to-Text
