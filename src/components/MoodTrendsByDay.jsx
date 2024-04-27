@@ -31,7 +31,22 @@ const MoodTrendsByDay = ({ averageMoodByDay }) => {
           font: {
             weight: "bold",
           },
-          callback: (value) => (value !== 0 ? value : ""),
+          callback: (val) => {
+            switch (val) {
+              case 1:
+                return "Very Negative";
+              case 2:
+                return "Negative";
+              case 3:
+                return "Neutral";
+              case 4:
+                return "Positive";
+              case 5:
+                return "Very Positive";
+              default:
+                return "";
+            }
+          },
         },
       },
     },

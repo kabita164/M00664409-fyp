@@ -31,7 +31,7 @@ const JournalForm = () => {
   const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
   const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(true);
   const [micError, setMicError] = useState("");
   const whisperSTT = useRef(null);
   let quillRef = useRef(null);
@@ -132,8 +132,8 @@ const JournalForm = () => {
 
   const handleStartRecording = async () => {
     try {
-      setIsRecording(true);
       await whisperSTT.current.startRecording();
+      setIsRecording(true);
     } catch (error) {
       console.log("Error starting recording:", error);
       setMicError(
@@ -203,6 +203,7 @@ const JournalForm = () => {
                 className="btn audio-btn stop-recording"
                 onClick={handleStopRecording}
                 type="button"
+                disabled={isTranscribing}
               >
                 <FontAwesomeIcon color="#cb0000" icon={faCircleStop} />
                 Stop and Transcribe
@@ -212,6 +213,7 @@ const JournalForm = () => {
                 className="btn audio-btn"
                 onClick={handleStartRecording}
                 type="button"
+                disabled={isTranscribing}
               >
                 <FontAwesomeIcon color="#cb0000" icon={faMicrophoneLines} />
                 Start Speech-to-Text
