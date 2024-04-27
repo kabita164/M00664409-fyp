@@ -78,6 +78,13 @@ button.btn.btn--secondary {
   width: 100px;
 }
 
+.background-image-wrapper {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+}
+
 .sign-in-page {
   height: 100vh;
   display: flex;

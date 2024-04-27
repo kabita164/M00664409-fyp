@@ -31,7 +31,7 @@ const JournalForm = () => {
   const [isSaving, setIsSaving] = useState(false);
   const { currentUser } = useAuth();
   const [isRecording, setIsRecording] = useState(false);
-  const [isTranscribing, setIsTranscribing] = useState(true);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const [micError, setMicError] = useState("");
   const whisperSTT = useRef(null);
   let quillRef = useRef(null);
@@ -146,8 +146,8 @@ const JournalForm = () => {
   const handleStopRecording = async () => {
     setIsTranscribing(true);
     await whisperSTT.current.stopRecording((text) => {
-      appendTranscript(text);
       setIsTranscribing(false);
+      appendTranscript(text);
     });
     setIsRecording(false);
   };
