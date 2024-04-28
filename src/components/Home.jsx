@@ -27,6 +27,12 @@ const Home = () => {
             <h3>View mood trends</h3>
           </Link>
         </div>
+
+        <div className="landing-quote">
+          A personal journal is an ideal environment in which to
+          &quot;become&quot;. It is a perfect place for you to think, feel,
+          discover, expand, remember, and dream.
+        </div>
       </div>
 
       <div className="background-image-wrapper">

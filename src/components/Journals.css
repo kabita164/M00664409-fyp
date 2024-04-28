@@ -34,7 +34,7 @@
 }
 
 .entry-content-trimmed {
-  max-height: 70px;
+  max-height: 30px;
   overflow: hidden;
 }
 
